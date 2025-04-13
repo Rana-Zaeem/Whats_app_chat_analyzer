@@ -1,4 +1,13 @@
 import streamlit as st
+
+# Configure page settings and theme - MUST BE THE FIRST STREAMLIT COMMAND
+st.set_page_config(
+    page_title="WhatsApp Chat Analyzer",
+    page_icon="💬",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 import preprocessor
 from wordcloud import WordCloud
 import helper
@@ -9,14 +18,6 @@ import seaborn as sns
 import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
-
-# Configure page settings and theme - MUST BE THE FIRST STREAMLIT COMMAND
-st.set_page_config(
-    page_title="WhatsApp Chat Analyzer",
-    page_icon="💬",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
 
 # Custom CSS styling
 st.markdown("""

@@ -354,22 +354,15 @@ def activity_heatmap(selected_user, df):
     user_heatmap = user_heatmap.fillna(0)
 
     # Create first heatmap figure - Clean visualization
-    figure1 = go.Figure(data=go.Heatmap(
+    figure1 = go.Figure(data=[go.Heatmap(
         z=user_heatmap.values,
         x=user_heatmap.columns,
         y=user_heatmap.index,
         colorscale='Viridis',
         showscale=True,
-        colorbar=dict(
-            title='Message Count',
-            titleside='right',
-            thickness=15,
-            len=0.75,
-            tickfont=dict(size=12),
-            titlefont=dict(size=14)
-        ),
+        hoverongaps=False,
         hovertemplate='Day: %{y}<br>Time: %{x}<br>Messages: %{z}<extra></extra>'
-    ))
+    )])
     
     # Update layout for the first figure with broader display
     figure1.update_layout(
@@ -407,7 +400,7 @@ def activity_heatmap(selected_user, df):
     )
     
     # Create second heatmap figure with annotations
-    figure2 = go.Figure(data=go.Heatmap(
+    figure2 = go.Figure(data=[go.Heatmap(
         z=user_heatmap.values,
         x=user_heatmap.columns,
         y=user_heatmap.index,
@@ -416,16 +409,9 @@ def activity_heatmap(selected_user, df):
         texttemplate="%{text}",
         textfont={"size": 12, "color": "white", "family": "Arial"},
         showscale=True,
-        colorbar=dict(
-            title='Message Count',
-            titleside='right',
-            thickness=15,
-            len=0.75,
-            tickfont=dict(size=12),
-            titlefont=dict(size=14)
-        ),
+        hoverongaps=False,
         hovertemplate='Day: %{y}<br>Time: %{x}<br>Messages: %{z}<extra></extra>'
-    ))
+    )])
     
     # Update layout for the second figure with broader display
     figure2.update_layout(

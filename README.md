@@ -1,6 +1,13 @@
 # WhatsApp Chat Analyzer
 
-A powerful and interactive web application built with Streamlit for analyzing WhatsApp chat data. This tool provides comprehensive insights into your WhatsApp conversations through various analyses including message patterns, sentiment analysis, and topic modeling.
+📱 A powerful Python-based WhatsApp chat analyzer that provides deep insights into your conversations through interactive visualizations. Features include message pattern analysis, sentiment analysis, topic modeling, and detailed activity metrics. Built with Streamlit for an easy-to-use web interface.
+
+🚀 **Key Features:**
+- Advanced message analytics and statistics
+- Sentiment analysis of conversations
+- Topic modeling to identify discussion themes
+- Interactive visualizations and word clouds
+- Support for individual and group chats
 
 ## Features
 
@@ -35,7 +42,7 @@ A powerful and interactive web application built with Streamlit for analyzing Wh
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/whats_app_chat_analyzer.git
+git clone https://github.com/Rana-Zaeem/Whats_app_chat_analyzer.git
 cd whats_app_chat_analyzer
 ```
 

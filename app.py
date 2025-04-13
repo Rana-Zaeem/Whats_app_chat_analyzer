@@ -8,9 +8,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Import all other dependencies after set_page_config
-import preprocessor
+# Import all other libraries after set_page_config
 from wordcloud import WordCloud
+import preprocessor
 import helper
 import sentiment
 import topic_analysis

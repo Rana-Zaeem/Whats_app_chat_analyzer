@@ -229,20 +229,31 @@ analysis_type = st.sidebar.radio(
 
 uploaded_file = st.sidebar.file_uploader("Choose a file")
 if uploaded_file is not None:
-    bytes_data = uploaded_file.getvalue()
-    data = bytes_data.decode("utf-8")
-    df = preprocessor.preprocess(data)
-    
-    # fetch unique user list
-    user_list = df['user'].unique().tolist()
-    
-    if 'group_notification' in user_list:
-        user_list.remove('group_notification')
-    
-    user_list.sort()
-    user_list.insert(0, 'Overall')
-    
-    selected_user = st.sidebar.selectbox('Show Analysis wrt', user_list)
+    try:
+        bytes_data = uploaded_file.getvalue()
+        data = bytes_data.decode("utf-8")
+        
+        with st.spinner('Processing chat data...'):
+            df = preprocessor.preprocess(data)
+        
+        # fetch unique user list
+        user_list = df['user'].unique().tolist()
+        
+        if 'group_notification' in user_list:
+            user_list.remove('group_notification')
+        
+        user_list.sort()
+        user_list.insert(0, 'Overall')
+        
+        selected_user = st.sidebar.selectbox('Show Analysis wrt', user_list)
+
+    except UnicodeDecodeError:
+        st.error("⚠️ Error: Unable to read the file. Please make sure it's a valid text file exported from WhatsApp.")
+    except ValueError as e:
+        st.error(f"⚠️ {str(e)}")
+    except Exception as e:
+        st.error("⚠️ An unexpected error occurred. Please check your chat file format and try again.")
+        st.exception(e)  # This will show the full error in development mode
 
     if analysis_type == "Chat Analysis":
         if st.sidebar.button('Show Chat Analysis'):

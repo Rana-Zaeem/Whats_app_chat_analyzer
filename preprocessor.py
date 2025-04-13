@@ -8,22 +8,13 @@ def preprocess(data):
         messages = re.split(pattern, data)[1:]
         dates = re.findall(pattern, data)
         
-        if not messages or not dates:
-            st.error("No valid messages found in the chat file")
-            return None
-            
         df = pd.DataFrame({'user_message': messages, 'message_date': dates})
         
+        # Try both date formats
         try:
-            df['message_date'] = pd.to_datetime(df['message_date'], format='%d/%m/%y, %I:%M %p - ')
+            df['date'] = pd.to_datetime(df['message_date'], format='%d/%m/%y, %I:%M %p - ')
         except:
-            try:
-                df['message_date'] = pd.to_datetime(df['message_date'], format='%m/%d/%y, %I:%M %p - ')
-            except Exception as e:
-                st.error("Could not parse message dates")
-                return None
-
-        df.rename(columns={'message_date': 'date'}, inplace=True)
+            df['date'] = pd.to_datetime(df['message_date'], format='%m/%d/%y, %I:%M %p - ')
 
         users = []
         messages = []
@@ -38,7 +29,7 @@ def preprocess(data):
 
         df['user'] = users
         df['message'] = messages
-        df.drop(columns=['user_message'], inplace=True)
+        df.drop(columns=['user_message', 'message_date'], inplace=True)
 
         df['only_date'] = df['date'].dt.date
         df['year'] = df['date'].dt.year
@@ -52,18 +43,12 @@ def preprocess(data):
 
         period = []
         for hour in df['hour']:
-            if hour == 11:
-                period.append(f'{hour}AM-12PM')
-            elif hour == 23:
-                period.append(f'{hour-12}PM-12AM')
-            elif hour == 0:
-                period.append('12AM-1AM')
-            elif hour == 12:
-                period.append('12PM-1PM')
-            elif hour < 11:
-                period.append(f'{hour}AM-{hour+1}AM')
-            else:
-                period.append(f'{hour-12}PM-{hour-11}PM')
+            if hour == 11: period.append(f'{hour}AM-12PM')
+            elif hour == 23: period.append(f'{hour-12}PM-12AM')
+            elif hour == 0: period.append('12AM-1AM')
+            elif hour == 12: period.append('12PM-1PM')
+            elif hour < 11: period.append(f'{hour}AM-{hour+1}AM')
+            else: period.append(f'{hour-12}PM-{hour-11}PM')
 
         df['period'] = period
         return df

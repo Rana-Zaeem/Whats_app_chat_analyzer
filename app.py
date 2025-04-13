@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
 
-# Configure page settings and theme
+# Configure page settings and theme - MUST BE THE FIRST STREAMLIT COMMAND
 st.set_page_config(
     page_title="WhatsApp Chat Analyzer",
     page_icon="💬",
@@ -381,7 +381,7 @@ if uploaded_file is not None:
 
             # Word Cloud section
             st.markdown("""
-                <div style='background-color: #1f2937; padding: 2rem; border-radius: 0.8rem; margin: 2rem 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);'>
+                <div style='background-color: #1f2937; padding: 2rem; border-radius: 0.8rem; margin: 2rem 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);'>
                     <h2 style='color: #fff; margin-bottom: 1.5rem; font-size: 1.8rem;'>Interactive Word Cloud Visualization</h2>
                     <p style='color: #9ca3af; margin-bottom: 1.5rem;'>Discover the most prominent words in your chat conversations</p>
                 </div>

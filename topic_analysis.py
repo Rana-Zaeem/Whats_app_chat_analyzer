@@ -6,16 +6,26 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import re
+import streamlit as st
 
-# Download required NLTK data
+# Download required NLTK data with error handling
 try:
     nltk.data.find('tokenizers/punkt')
 except LookupError:
-    nltk.download('punkt')
+    try:
+        with st.spinner('Downloading required NLTK data...'):
+            nltk.download('punkt', quiet=True)
+    except Exception as e:
+        st.error(f"Error downloading NLTK data: {str(e)}")
+
 try:
     nltk.data.find('corpora/stopwords')
 except LookupError:
-    nltk.download('stopwords')
+    try:
+        with st.spinner('Downloading additional NLTK data...'):
+            nltk.download('stopwords', quiet=True)
+    except Exception as e:
+        st.error(f"Error downloading NLTK stopwords: {str(e)}")
 
 # Predefined topic categories and their related words
 PREDEFINED_TOPICS = {

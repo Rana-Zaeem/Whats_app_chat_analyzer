@@ -14,24 +14,14 @@ def preprocess(data):
             
         df = pd.DataFrame({'user_message': messages, 'message_date': dates})
         
-        # Try multiple date formats
-        date_formats = [
-            '%m/%d/%y, %I:%M %p - ',
-            '%d/%m/%y, %I:%M %p - ',
-            '%m/%d/%Y, %I:%M %p - ',
-            '%d/%m/%Y, %I:%M %p - '
-        ]
-        
-        for date_format in date_formats:
+        try:
+            df['message_date'] = pd.to_datetime(df['message_date'], format='%d/%m/%y, %I:%M %p - ')
+        except:
             try:
-                df['message_date'] = pd.to_datetime(df['message_date'], format=date_format)
-                break
-            except:
-                continue
-                
-        if pd.api.types.is_datetime64_dtype(df['message_date']) == False:
-            st.error("Could not parse message dates")
-            return None
+                df['message_date'] = pd.to_datetime(df['message_date'], format='%m/%d/%y, %I:%M %p - ')
+            except Exception as e:
+                st.error("Could not parse message dates")
+                return None
 
         df.rename(columns={'message_date': 'date'}, inplace=True)
 

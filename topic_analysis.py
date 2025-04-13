@@ -1,3 +1,4 @@
+# SECTION 1: Imports and NLTK Setup
 import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -8,25 +9,27 @@ from nltk.tokenize import word_tokenize
 import re
 import streamlit as st
 
-# Simple fallback tokenizer in case NLTK fails
-def simple_tokenize(text):
-    return text.split()
-
+# Initialize NLTK with error handling
 def ensure_nltk_data():
+    """Initialize required NLTK data with fallback options"""
     try:
-        # Try using existing data
         nltk.data.find('tokenizers/punkt')
         nltk.data.find('corpora/stopwords')
     except LookupError:
         try:
-            # Download required data
-            nltk.download('punkt', quiet=True)
-            nltk.download('stopwords', quiet=True)
+            with st.spinner('Downloading required NLTK data...'):
+                nltk.download('punkt', quiet=True)
+                nltk.download('stopwords', quiet=True)
             return True
         except Exception as e:
             st.warning("NLTK data download failed, using simple tokenization instead")
             return False
 
+def simple_tokenize(text):
+    """Simple fallback tokenizer when NLTK is unavailable"""
+    return text.split()
+
+# SECTION 2: Topic Categories Definition
 # Predefined topic categories and their related words
 PREDEFINED_TOPICS = {
     'Deleted Messages': [
@@ -200,12 +203,13 @@ PREDEFINED_TOPICS = {
     ]
 }
 
+# SECTION 3: Text Processing Functions
 def preprocess_text(text):
     """Clean and preprocess text for topic modeling"""
     # Convert to lowercase
     text = text.lower()
     
-    # Remove special characters and digits but keep important punctuation
+    # Remove special characters and digits
     text = re.sub(r'[^a-zA-Z\s]', ' ', text)
     
     # Tokenize with fallback
@@ -217,12 +221,11 @@ def preprocess_text(text):
     except Exception:
         tokens = simple_tokenize(text)
     
+    # Handle stopwords with fallback
     try:
-        # Remove stopwords if available
         stop_words = set(stopwords.words('english'))
     except:
-        # Fallback to basic stopwords
-        stop_words = {'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once'}
+        stop_words = {'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves'}
     
     # Add custom stopwords
     try:
@@ -235,6 +238,7 @@ def preprocess_text(text):
     tokens = [token for token in tokens if token not in stop_words and len(token) > 2]
     return ' '.join(tokens)
 
+# SECTION 4: Topic Analysis Functions
 def calculate_topic_scores(text, topic_words):
     """Calculate how well a text matches a predefined topic"""
     text = text.lower()
@@ -257,47 +261,43 @@ def extract_topics(df, selected_user='Overall', num_topics=5, num_words=5):
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
     
-    # Filter out media messages and group notifications
+    # Filter messages
     df = df[df['message'] != '<Media omitted>\n']
     df = df[df['user'] != 'group_notification']
     
-    # Calculate predefined topic scores for each message
+    # Calculate topic scores
     topic_scores = []
     for message in df['message']:
         scores = classify_message(message)
         topic_scores.append(scores)
     
-    # Convert scores to DataFrame
+    # Process results
     topic_scores_df = pd.DataFrame(topic_scores)
-    
-    # Calculate overall topic strengths
     total_messages = len(df)
     topic_strengths = {}
     
     for topic in PREDEFINED_TOPICS.keys():
-        # Count messages where topic score > 0
         topic_count = sum(1 for score in topic_scores if score[topic] > 0)
         strength = (topic_count / total_messages * 100) if total_messages > 0 else 0
         topic_strengths[topic] = strength
     
-    # Create topics DataFrame
+    # Create output DataFrame
     topics = []
     for topic, strength in topic_strengths.items():
         topics.append({
             'topic_id': len(topics) + 1,
             'topic_name': topic,
-            'top_words': ', '.join(PREDEFINED_TOPICS[topic][:5]),  # Show top 5 keywords
+            'top_words': ', '.join(PREDEFINED_TOPICS[topic][:5]),
             'strength': strength,
             'strength_percent': round(strength, 2)
         })
     
     topics_df = pd.DataFrame(topics)
-    topics_df = topics_df.sort_values('strength', ascending=False)
-    
-    return topics_df
+    return topics_df.sort_values('strength', ascending=False)
 
+# SECTION 5: Visualization Functions
 def create_topic_visualization(topics_df):
-    """Create a visualization for the topics"""
+    """Create an interactive visualization for topic analysis"""
     import plotly.graph_objects as go
     
     if topics_df is None or len(topics_df) == 0:
@@ -307,7 +307,7 @@ def create_topic_visualization(topics_df):
     fig = go.Figure()
     
     fig.add_trace(go.Bar(
-        x=topics_df['topic_name'],  # Use topic names instead of IDs
+        x=topics_df['topic_name'],
         y=topics_df['strength_percent'],
         text=topics_df['strength_percent'].apply(lambda x: f'{x:.1f}%'),
         textposition='auto',
@@ -325,6 +325,7 @@ def create_topic_visualization(topics_df):
                      "<extra></extra>"
     ))
     
+    # Update layout with professional styling
     fig.update_layout(
         title=dict(
             text='Message Categories Distribution',
@@ -350,7 +351,7 @@ def create_topic_visualization(topics_df):
             gridcolor='rgba(255, 255, 255, 0.1)',
             linecolor='white'
         ),
-        margin=dict(l=60, r=60, t=80, b=120),  # Increased bottom margin for rotated labels
+        margin=dict(l=60, r=60, t=80, b=120),
         width=1000,
         height=600
     )

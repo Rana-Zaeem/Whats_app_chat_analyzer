@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Configure page settings and theme - MUST BE THE FIRST STREAMLIT COMMAND
+# Must be the first Streamlit command
 st.set_page_config(
     page_title="WhatsApp Chat Analyzer",
     page_icon="💬",
@@ -8,6 +8,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Import all other dependencies after set_page_config
 import preprocessor
 from wordcloud import WordCloud
 import helper

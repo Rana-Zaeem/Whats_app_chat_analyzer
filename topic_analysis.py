@@ -8,24 +8,24 @@ from nltk.tokenize import word_tokenize
 import re
 import streamlit as st
 
-# Download required NLTK data with error handling
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    try:
-        with st.spinner('Downloading required NLTK data...'):
-            nltk.download('punkt', quiet=True)
-    except Exception as e:
-        st.error(f"Error downloading NLTK data: {str(e)}")
+# Simple fallback tokenizer in case NLTK fails
+def simple_tokenize(text):
+    return text.split()
 
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
+def ensure_nltk_data():
     try:
-        with st.spinner('Downloading additional NLTK data...'):
+        # Try using existing data
+        nltk.data.find('tokenizers/punkt')
+        nltk.data.find('corpora/stopwords')
+    except LookupError:
+        try:
+            # Download required data
+            nltk.download('punkt', quiet=True)
             nltk.download('stopwords', quiet=True)
-    except Exception as e:
-        st.error(f"Error downloading NLTK stopwords: {str(e)}")
+            return True
+        except Exception as e:
+            st.warning("NLTK data download failed, using simple tokenization instead")
+            return False
 
 # Predefined topic categories and their related words
 PREDEFINED_TOPICS = {
@@ -208,18 +208,31 @@ def preprocess_text(text):
     # Remove special characters and digits but keep important punctuation
     text = re.sub(r'[^a-zA-Z\s]', ' ', text)
     
-    # Tokenize
-    tokens = word_tokenize(text)
+    # Tokenize with fallback
+    try:
+        if ensure_nltk_data():
+            tokens = word_tokenize(text)
+        else:
+            tokens = simple_tokenize(text)
+    except Exception:
+        tokens = simple_tokenize(text)
     
-    # Remove stopwords
-    stop_words = set(stopwords.words('english'))
+    try:
+        # Remove stopwords if available
+        stop_words = set(stopwords.words('english'))
+    except:
+        # Fallback to basic stopwords
+        stop_words = {'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once'}
+    
     # Add custom stopwords
-    with open('stop_hinglish.txt', 'r') as f:
-        custom_stops = set(f.read().split())
-    stop_words.update(custom_stops)
+    try:
+        with open('stop_hinglish.txt', 'r') as f:
+            custom_stops = set(f.read().split())
+        stop_words.update(custom_stops)
+    except:
+        pass
     
     tokens = [token for token in tokens if token not in stop_words and len(token) > 2]
-    
     return ' '.join(tokens)
 
 def calculate_topic_scores(text, topic_words):

@@ -4,4 +4,15 @@ enableXsrfProtection = false
 
 [theme]
 base="dark"
-primaryColor="#FF4B4B"
+primaryColor="#4CAF50"
+backgroundColor="#0e1117"
+secondaryBackgroundColor="#1f2937"
+textColor="#ffffff"
+font="sans serif"
+
+[browser]
+serverAddress = "localhost"
+gatherUsageStats = false
+
+[ui]
+hideTopBar = false

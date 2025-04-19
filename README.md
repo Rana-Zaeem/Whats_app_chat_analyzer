@@ -13,6 +13,7 @@ A powerful Python-based WhatsApp chat analyzer that transforms your conversation
 - **🔍 Topic Modeling**: Automatically identify what topics are being discussed
 - **📅 Time Comparison**: Compare conversation patterns across different time periods
 - **🎨 Customizable Themes**: Choose from multiple visual themes for the dashboard
+- **📱 Responsive Design**: Fully optimized for both mobile devices and desktop computers
 
 ## 📸 Screenshots
 
@@ -138,21 +139,35 @@ A powerful Python-based WhatsApp chat analyzer that transforms your conversation
 - **WordCloud** - Text visualization
 - **Scikit-learn** - Machine learning for topic modeling
 
+## 📱 Responsive Design
+
+The application is fully responsive and optimized for all devices:
+
+- **Mobile-friendly interface**: All features work seamlessly on smartphones and tablets
+- **Adaptive layout**: UI elements reorganize based on screen size
+- **Touch-optimized controls**: Larger buttons and controls on touch devices
+- **Responsive visualizations**: Charts and graphs scale appropriately for all screen sizes
+- **Performance optimized**: Fast loading even on mobile connections
+
 ## 📁 Project Structure
 
 ```
 whats_app_chat_analyzer/
 │
-├── app.py              # Main Streamlit application
-├── preprocessor.py     # Data preprocessing module
-├── helper.py           # Helper functions for analysis
-├── sentiment.py        # Sentiment analysis module
-├── topic_analysis.py   # Topic modeling and analysis
-├── requirements.txt    # Python dependencies
-├── packages.txt        # System dependencies
-├── setup.sh            # Setup script for deployment
-├── stop_hinglish.txt   # Custom stopwords
-└── README.md           # Project documentation
+├── app.py                # Main Streamlit application
+├── preprocessor.py       # Data preprocessing module
+├── helper.py             # Helper functions for analysis
+├── sentiment.py          # Sentiment analysis module
+├── topic_analysis.py     # Topic modeling and analysis
+├── responsive_functions.py # Responsive design helpers
+├── requirements.txt      # Python dependencies
+├── packages.txt          # System dependencies
+├── setup.sh              # Setup script for deployment
+├── stop_hinglish.txt     # Custom stopwords
+├── .streamlit/           # Streamlit configuration
+│   ├── config.toml       # App configuration
+│   └── style.css         # Custom CSS styles
+└── README.md             # Project documentation
 ```
 
 ## 🤝 Contributing

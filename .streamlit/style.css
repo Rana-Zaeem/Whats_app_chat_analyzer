@@ -1,0 +1,117 @@
+/* Global Responsive Design */
+.main .block-container {
+    max-width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* Responsive Typography */
+@media screen and (max-width: 640px) {
+    h1 {
+        font-size: 1.8rem !important;
+    }
+    h2 {
+        font-size: 1.4rem !important;
+    }
+    h3 {
+        font-size: 1.2rem !important;
+    }
+    p, li, .caption {
+        font-size: 0.9rem !important;
+    }
+    div[data-testid="stMetricValue"] {
+        font-size: 1.3rem !important;
+    }
+}
+
+/* Tablet Responsive Settings */
+@media screen and (min-width: 641px) and (max-width: 1024px) {
+    h1 {
+        font-size: 2.2rem !important;
+    }
+    h2 {
+        font-size: 1.8rem !important;
+    }
+    h3 {
+        font-size: 1.4rem !important;
+    }
+    div[data-testid="stMetricValue"] {
+        font-size: 1.8rem !important;
+    }
+}
+
+/* Ensure visualizations are responsive */
+[data-testid="stImage"] img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Make DataFrames responsive */
+[data-testid="stDataFrame"] {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Responsive charts and plots */
+.js-plotly-plot, .plotly, .plot-container {
+    max-width: 100%;
+    height: auto !important;
+}
+
+/* Adjust sidebar for mobile */
+@media screen and (max-width: 640px) {
+    [data-testid="stSidebar"] {
+        width: 100%;
+        min-width: 100%;
+    }
+    
+    [data-testid="stSidebar"][aria-expanded="true"] {
+        margin-left: 0;
+    }
+    
+    [data-testid="stSidebar"][aria-expanded="false"] {
+        margin-left: -100%;
+    }
+}
+
+/* Improve button usability on mobile */
+@media screen and (max-width: 640px) {
+    .stButton > button {
+        width: 100%;
+        height: 3rem;
+        font-size: 1rem;
+    }
+}
+
+/* Adjust file uploader for mobile */
+@media screen and (max-width: 640px) {
+    [data-testid="stFileUploader"] {
+        width: 100%;
+    }
+    
+    [data-testid="stFileUploader"] label {
+        font-size: 0.9rem;
+    }
+}
+
+/* Responsive columns for st.columns */
+@media screen and (max-width: 640px) {
+    div[data-testid="column"] {
+        width: 100% !important;
+        min-width: 100% !important;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Touch support for interactive elements */
+@media (hover: none) {
+    .step-list li:active, .feature-list li:active, 
+    .chart-container:active, .section-card:active {
+        transform: translateX(3px);
+        transition: all 0.2s ease;
+    }
+    
+    .stButton > button:active {
+        transform: scale(0.98);
+    }
+} 

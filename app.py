@@ -9,6 +9,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Import responsive functions first to apply styles
+import responsive_functions
+
+# Apply responsive styles
+responsive_functions.apply_responsive_styles()
+
 # Import all other libraries after set_page_config
 from wordcloud import WordCloud
 import preprocessor

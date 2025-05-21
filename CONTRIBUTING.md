@@ -56,12 +56,14 @@ Suppose you want to add a new toxic word (e.g., "loser") to the toxicity detecti
 1. Open `models/sentiment_toxicity.py`.
 2. Find the `TOXIC_WORDS` set near the top.
 3. Add your word to the set, e.g.:
+
    ```python
    TOXIC_WORDS = set([
-       ...existing words...,
+       # ...existing words...
        'loser'
    ])
    ```
+
 4. Save the file and run the app to test.
 5. If it works, follow the steps above to commit and submit a pull request!
 

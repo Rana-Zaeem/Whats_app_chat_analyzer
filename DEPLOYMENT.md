@@ -1,6 +1,45 @@
 # Deployment Guide for WhatsApp Chat Analyzer
 
-This guide will help you deploy your WhatsApp Chat Analyzer app to various platforms.
+This guide will help you deploy your WhatsApp Chat Analyzer app to various platforms and solve common deployment issues, especially slow build times.
+
+## Solving Slow Deployment Issues
+
+The WhatsApp Chat Analyzer can experience slow deployments due to:
+
+1. **Heavy ML packages that need compiling:**
+   - `gensim` and `spacy` are large machine learning packages requiring compilation
+   - When pre-built wheels aren't available, they build from source (very slow)
+
+2. **Language model downloads:**
+   - `spacy` downloads language models during setup
+   - `nltk` downloads text datasets during initialization
+
+### Quick Solutions for Faster Deployment:
+
+1. **Use fixed Python version** - Already set to `python-3.11.9` in `runtime.txt`
+2. **Optimize requirements.txt:**
+
+```
+streamlit>=1.27.0
+numpy==1.24.3
+pandas==2.0.3
+matplotlib==3.7.2
+seaborn==0.12.2
+plotly==5.13.1
+wordcloud==1.9.2
+nltk==3.8.1
+scikit-learn==1.3.0
+emoji==2.2.0
+urlextract==1.3.0
+textblob==0.17.1
+# Use specific versions with pre-built wheels
+gensim==4.3.1
+spacy==3.7.2
+# Pre-download language model
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.0/en_core_web_sm-3.7.0-py3-none-any.whl
+```
+
+3. **Cache expensive operations** in your app with `@st.cache_data`
 
 ## Recommended Platform: Streamlit Cloud
 

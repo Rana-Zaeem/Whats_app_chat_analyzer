@@ -5,17 +5,13 @@ mkdir -p ~/.streamlit/
 # Update pip
 python -m pip install --upgrade pip
 
-# Install core dependencies first
+# Install core dependencies first with specific versions that have pre-built wheels
 pip install --no-cache-dir wheel setuptools
 
-# Install NLTK data
-python -m nltk.downloader punkt
-python -m nltk.downloader stopwords
-python -m nltk.downloader averaged_perceptron_tagger
+# Install NLTK data with a timeout to prevent hanging
+python -c "import nltk; nltk.download('punkt', timeout=60); nltk.download('stopwords', timeout=60); nltk.download('averaged_perceptron_tagger', timeout=60)"
 
-# Install spaCy model
-python -m pip install --no-cache-dir spacy
-python -m spacy download en_core_web_sm
+# No need to download spacy model since we're including it in requirements.txt as a wheel
 
 # Setup Streamlit config for deployment
 cat > ~/.streamlit/config.toml <<EOF

@@ -3,6 +3,43 @@ import time
 import pandas as pd
 import hashlib
 
+# Configure page for better performance
+st.set_page_config(
+    page_title="WhatsApp Chat Analyzer",
+    page_icon="💬",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# Apply caching to expensive operations to improve performance
+# This helps with deployment speed and app responsiveness
+@st.cache_data(ttl=3600)
+def load_nlp_resources():
+    """Cache NLP resources to speed up operations"""
+    import spacy
+    import nltk
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt')
+    try:
+        nltk.data.find('corpora/stopwords')
+    except LookupError:
+        nltk.download('stopwords')
+    try:
+        return spacy.load('en_core_web_sm')
+    except:
+        # Fallback if model isn't available
+        spacy.cli.download('en_core_web_sm')
+        return spacy.load('en_core_web_sm')
+
+# Pre-load resources in background to improve performance
+try:
+    nlp = load_nlp_resources()
+except:
+    # Continue without it, will be loaded when needed
+    pass
+
 # =============================================
 # SECTION 1: IMPORTS AND INITIALIZATION
 # =============================================
@@ -25,7 +62,7 @@ from components.chat_analysis import run_chat_analysis
 from components.sentiment_analysis import run_sentiment_analysis
 from components.topic_analysis import run_topic_analysis
 from components.time_comparison import run_time_comparison
-
+ 
 # =============================================
 # SECTION 2: STREAMLIT CONFIGURATION
 # =============================================

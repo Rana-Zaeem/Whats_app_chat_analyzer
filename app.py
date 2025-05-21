@@ -15,8 +15,7 @@ st.set_page_config(
 # This helps with deployment speed and app responsiveness
 @st.cache_data(ttl=3600)
 def load_nlp_resources():
-    """Cache NLP resources to speed up operations"""
-    import spacy
+    """Cache NLTK resources to speed up operations"""
     import nltk
     try:
         nltk.data.find('tokenizers/punkt')
@@ -27,15 +26,14 @@ def load_nlp_resources():
     except LookupError:
         nltk.download('stopwords')
     try:
-        return spacy.load('en_core_web_sm')
-    except:
-        # Fallback if model isn't available
-        spacy.cli.download('en_core_web_sm')
-        return spacy.load('en_core_web_sm')
+        nltk.data.find('taggers/averaged_perceptron_tagger')
+    except LookupError:
+        nltk.download('averaged_perceptron_tagger')
+    return True
 
 # Pre-load resources in background to improve performance
 try:
-    nlp = load_nlp_resources()
+    nlp_ready = load_nlp_resources()
 except:
     # Continue without it, will be loaded when needed
     pass

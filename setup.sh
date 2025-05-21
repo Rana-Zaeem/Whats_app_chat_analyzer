@@ -1,37 +1,28 @@
 #!/bin/bash
 
-# Create the streamlit config directory
+# Create streamlit directory
 mkdir -p ~/.streamlit/
 
-# Install dependencies with optimized settings
-echo "Installing dependencies..."
-pip install --upgrade pip
-pip install --no-cache-dir wheel setuptools
-pip install -r requirements.txt
+# Install Python distutils first - this is critical
+apt-get update && apt-get install -y python3-distutils python3-setuptools || echo "Failed to install distutils, but continuing"
 
-# Install NLTK data
-echo "Downloading NLTK data..."
-python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('averaged_perceptron_tagger')" || echo "NLTK download failed but continuing"
+# Install pip in a way that works on all platforms
+pip install --no-cache-dir --ignore-installed pip==20.0.2
 
-# Setup Streamlit config for deployment
+# Install basic build tools
+pip install --no-cache-dir wheel setuptools==44.0.0
+
+# Install requirements with very basic settings
+pip install --no-cache-dir -r requirements.txt
+
+# Download NLTK data with safe options
+python -c "import nltk; nltk.download('punkt', quiet=True); nltk.download('stopwords', quiet=True); nltk.download('averaged_perceptron_tagger', quiet=True)" || echo "NLTK download failed, but continuing"
+
+# Configure Streamlit simply
 cat > ~/.streamlit/config.toml <<EOF
 [server]
+port = $PORT
 headless = true
-enableCORS = true
-enableXsrfProtection = true
-
-[theme]
-base = "dark"
-primaryColor = "#4CAF50"
-backgroundColor = "#0e1117"
-secondaryBackgroundColor = "#1f2937"
-textColor = "#ffffff"
-font = "sans serif"
+enableCORS = false
 EOF
-
-# Setup port for Heroku and other platforms
-echo "\
-[server]\n\
-port = $PORT\n\
-" > ~/.streamlit/config.toml
 " > ~/.streamlit/config.toml

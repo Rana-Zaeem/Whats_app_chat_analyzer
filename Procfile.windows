@@ -1,2 +1,0 @@
-# Procfile.windows
-web: streamlit run app.py

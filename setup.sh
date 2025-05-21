@@ -1,27 +1,17 @@
 #!/bin/bash
 
+# Create the streamlit config directory
 mkdir -p ~/.streamlit/
 
-# Handle the distutils issue first - this is critical!
-echo "Installing system dependencies..."
-apt-get update || true
-apt-get install -y python3-distutils python3-dev build-essential || true
+# Install dependencies with optimized settings
+echo "Installing dependencies..."
+pip install --upgrade pip
+pip install --no-cache-dir wheel setuptools
+pip install -r requirements.txt
 
-# Update pip but pin to a version known to work
-echo "Upgrading pip..."
-python -m pip install --upgrade pip==21.3.1
-
-# Install core dependencies first with pre-built wheels
-echo "Installing build tools..."
-pip install --no-cache-dir wheel==0.37.1 setuptools==59.6.0
-
-# Use the ultra-compatible requirements-fixed.txt
-echo "Installing requirements..."
-pip install -r requirements-fixed.txt --no-dependencies --no-build-isolation
-
-# Install NLTK data separately to avoid timeout issues
+# Install NLTK data
 echo "Downloading NLTK data..."
-python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('averaged_perceptron_tagger')" || true
+python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('averaged_perceptron_tagger')" || echo "NLTK download failed but continuing"
 
 # Setup Streamlit config for deployment
 cat > ~/.streamlit/config.toml <<EOF
@@ -43,4 +33,5 @@ EOF
 echo "\
 [server]\n\
 port = $PORT\n\
+" > ~/.streamlit/config.toml
 " > ~/.streamlit/config.toml

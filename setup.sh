@@ -3,24 +3,25 @@
 mkdir -p ~/.streamlit/
 
 # Handle the distutils issue first - this is critical!
-if [ ! -d "/usr/local/lib/python3.9/distutils" ]; then
-  echo "Installing Python distutils..."
-  apt-get update && apt-get install -y python3-distutils
-fi
+echo "Installing system dependencies..."
+apt-get update || true
+apt-get install -y python3-distutils python3-dev build-essential || true
 
-# Update pip - use an older but stable version
-python -m pip install --upgrade pip==23.0.1
+# Update pip but pin to a version known to work
+echo "Upgrading pip..."
+python -m pip install --upgrade pip==21.3.1
 
 # Install core dependencies first with pre-built wheels
-pip install --no-cache-dir wheel setuptools
+echo "Installing build tools..."
+pip install --no-cache-dir wheel==0.37.1 setuptools==59.6.0
 
-# Use requirements.txt with compatible versions
-pip install -r requirements.txt --no-cache-dir
+# Use the ultra-compatible requirements-fixed.txt
+echo "Installing requirements..."
+pip install -r requirements-fixed.txt --no-dependencies --no-build-isolation
 
-# Install NLTK data with a timeout to prevent hanging
-python -c "import nltk; nltk.download('punkt', timeout=60); nltk.download('stopwords', timeout=60); nltk.download('averaged_perceptron_tagger', timeout=60)"
-
-# No need to download spacy model since we're including it in requirements.txt as a wheel
+# Install NLTK data separately to avoid timeout issues
+echo "Downloading NLTK data..."
+python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('averaged_perceptron_tagger')" || true
 
 # Setup Streamlit config for deployment
 cat > ~/.streamlit/config.toml <<EOF

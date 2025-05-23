@@ -1,1 +1,0 @@
-web: streamlit run minimal_app.py

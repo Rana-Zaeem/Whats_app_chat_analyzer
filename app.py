@@ -3,41 +3,6 @@ import time
 import pandas as pd
 import hashlib
 
-# Configure page for better performance
-st.set_page_config(
-    page_title="WhatsApp Chat Analyzer",
-    page_icon="💬",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-
-# Apply caching to expensive operations to improve performance
-# This helps with deployment speed and app responsiveness
-@st.cache_data(ttl=3600)
-def load_nlp_resources():
-    """Cache NLTK resources to speed up operations"""
-    import nltk
-    try:
-        nltk.data.find('tokenizers/punkt')
-    except LookupError:
-        nltk.download('punkt')
-    try:
-        nltk.data.find('corpora/stopwords')
-    except LookupError:
-        nltk.download('stopwords')
-    try:
-        nltk.data.find('taggers/averaged_perceptron_tagger')
-    except LookupError:
-        nltk.download('averaged_perceptron_tagger')
-    return True
-
-# Pre-load resources in background to improve performance
-try:
-    nlp_ready = load_nlp_resources()
-except:
-    # Continue without it, will be loaded when needed
-    pass
-
 # =============================================
 # SECTION 1: IMPORTS AND INITIALIZATION
 # =============================================

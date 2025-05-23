@@ -1,1 +1,1 @@
-web: bash setup.sh && streamlit run minimal_app.py
+web: streamlit run minimal_app.py

@@ -1,7 +1,8 @@
-﻿# Absolute minimal requirements with no complicated dependencies
-streamlit==1.10.0
-pandas==1.1.5
-numpy==1.19.5
-matplotlib==3.3.4
-seaborn==0.11.2
-nltk==3.6.2
+# Ultra minimal requirements with no complex dependencies
+# Use this only if regular requirements.txt fails during deployment
+streamlit==1.22.0
+pandas==1.3.5
+numpy==1.21.6
+matplotlib==3.5.3
+seaborn==0.12.2
+nltk==3.7

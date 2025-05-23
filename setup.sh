@@ -3,20 +3,16 @@
 # Create streamlit directory
 mkdir -p ~/.streamlit/
 
-# Install Python distutils first - this is critical
-apt-get update && apt-get install -y python3-distutils python3-setuptools || echo "Failed to install distutils, but continuing"
+# Try to install system packages but don't fail if it doesn't work
+apt-get update || true
+apt-get install -y python3-pip python3-setuptools python3-distutils build-essential || true
 
-# Install pip in a way that works on all platforms
-pip install --no-cache-dir --ignore-installed pip==20.0.2
+# Use a super simple pip installation approach
+pip install --upgrade pip || true
+pip install wheel setuptools || true
 
-# Install basic build tools
-pip install --no-cache-dir wheel setuptools==44.0.0
-
-# Install requirements with very basic settings
-pip install --no-cache-dir -r requirements.txt
-
-# Download NLTK data with safe options
-python -c "import nltk; nltk.download('punkt', quiet=True); nltk.download('stopwords', quiet=True); nltk.download('averaged_perceptron_tagger', quiet=True)" || echo "NLTK download failed, but continuing"
+# Install minimal requirements for fastest deployment
+pip install -r requirements-simplified.txt
 
 # Configure Streamlit simply
 cat > ~/.streamlit/config.toml <<EOF
@@ -24,5 +20,5 @@ cat > ~/.streamlit/config.toml <<EOF
 port = $PORT
 headless = true
 enableCORS = false
+enableXsrfProtection = false
 EOF
-" > ~/.streamlit/config.toml
